@@ -8,11 +8,7 @@ bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    bot.reply_to(message, "Este bot faz buscas na Wiki de League of Legends")
-	
-@bot.message_handler(func=lambda message: True)
-def echo_all(message):
-    bot.reply_to(message, "Este bot foi programado pra funcionar apenas em buscas em linha. Use sempre em um grupo. Feito por @Arquimago")
+    bot.reply_to(message, "Este bot faz buscas na Wiki de League of Legends, feito por @Arquimago")
 
 @bot.inline_handler(lambda query: query.query)
 def query_text(inline_query):
