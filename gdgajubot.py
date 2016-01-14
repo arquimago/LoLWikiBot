@@ -1,29 +1,68 @@
-import wikia
-import telebot
-from telebot import types
+#!/usr/bin/env python3
+#! encoding:utf-8
 
-TOKEN = #INSIRA SEU TOKEN AQUI COMO STRING, ENTRE "ASPAS"
-lol = "leagueoflegends"
+import telebot
+import os
+from telebot import types
+import collections
+import datetime
+import requests
+
+TOKEN = os.environ.get("TELEGRAM_TOKEN","") 
+MEETUP_KEY = os.environ.get("MEETUP_KEY","")
+group_name = 'GDG-Aracaju'
+
+default_payload = { 'status': 'upcoming' }
 bot = telebot.TeleBot(TOKEN)
+
+def generate_events(group_name, api_key):
+    offset = 0
+    while True:
+        offset_payload = { 'offset': offset,
+                           'key': api_key,
+                           'group_urlname': group_name }
+        payload = default_payload.copy()
+        payload = {**default_payload, **offset_payload}
+        print(payload)
+
+        r = requests.get('https://api.meetup.com/2/events', params=payload)
+        json = r.json()
+
+        results, meta = json['results'], json['meta']
+        for item in results:
+            yield item
+
+        # if we no longer have more results pages, stop…
+        if not meta['next']:
+            return
+
+        offset = offset + 1
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    bot.reply_to(message, "Este bot faz buscas na Wiki de League of Legends, feito por @Arquimago")
+    print("olá")
+    bot.reply_to(message, "Este bot faz buscas no Meetup do GDG Aracaju: http://meetup.com/GDG-Aracaju")
 
-@bot.inline_handler(lambda query: query.query)
-def query_text(inline_query):
-	try:
-		s = wikia.search(lol,inline_query.query)
-        	url1 = wikia.page(lol,s[0]).url
-        	url1 = url1.replace(' ', '%20')
-        	url2 = wikia.page(lol,s[1]).url
-        	url2 = url2.replace(' ', '%20')
-		title1 = wikia.page(lol,s[0]).title
-		title2 = wikia.page(lol,s[1]).title
-        	r = types.InlineQueryResultArticle('1', title1, url1)
-        	r2 = types.InlineQueryResultArticle('2', title2, url2)
-        	bot.answer_inline_query(inline_query.id, [r, r2])
-    	except Exception as e:
-        	print(e)
+@bot.message_handler(commands=['events'])
+def query_text(message):
+    print("hello")
+    try:
+        all_events = list(generate_events(group_name, MEETUP_KEY))
+        response = ""
+        print(all_events)
+        for event in all_events:
+            # convert time returned by Meetup API
+            time = int(event['time'])/1000
+            time_obj = datetime.datetime.fromtimestamp(time)
+
+            # create a pretty-looking date
+            date_pretty = time_obj.strftime('%d/%m')
+            
+            event['date_pretty'] = date_pretty
+            response = response + ("%s: %s %s \n" % (event["name"], event["date_pretty"], event["event_url"]))
+
+        bot.reply_to(message, response)
+    except Exception as e:
+        print(e)
 
 bot.polling()
