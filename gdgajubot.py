@@ -9,7 +9,7 @@ import datetime
 import requests
 
 # Configuring log
-logging.basicConfig(filename='bot.log',level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 # Configuring parameters
 logging.info("Configurando parâmetros")
