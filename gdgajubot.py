@@ -8,9 +8,9 @@ import collections
 import datetime
 import requests
 
-TOKEN = os.environ.get("TELEGRAM_TOKEN","") 
-MEETUP_KEY = os.environ.get("MEETUP_KEY","")
-group_name = 'GDG-Aracaju'
+TOKEN = ""
+MEETUP_KEY = ""
+group_name = ''
 
 default_payload = { 'status': 'upcoming' }
 bot = telebot.TeleBot(TOKEN)
@@ -22,9 +22,10 @@ def generate_events(group_name, api_key):
                            'key': api_key,
                            'group_urlname': group_name }
         payload = default_payload.copy()
-        payload = {**default_payload, **offset_payload}
-        print(payload)
-
+        payload.update(offset_payload)
+        # Above is the equivalent of jQuery.extend()
+        # for Python 3.5: payload = {**default_payload, **offset_payload}
+        
         r = requests.get('https://api.meetup.com/2/events', params=payload)
         json = r.json()
 
@@ -40,12 +41,10 @@ def generate_events(group_name, api_key):
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    print("olá")
     bot.reply_to(message, "Este bot faz buscas no Meetup do GDG Aracaju: http://meetup.com/GDG-Aracaju")
 
 @bot.message_handler(commands=['events'])
 def query_text(message):
-    print("hello")
     try:
         all_events = list(generate_events(group_name, MEETUP_KEY))
         response = ""
@@ -65,4 +64,5 @@ def query_text(message):
     except Exception as e:
         print(e)
 
+print("iniciando bot....")
 bot.polling()
