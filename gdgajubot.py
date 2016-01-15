@@ -1,26 +1,44 @@
 #!/usr/bin/env python3
 #! encoding:utf-8
-
+import argparse
+import logging
 import telebot
 import os
-from telebot import types
 import collections
 import datetime
 import requests
 
-TOKEN = ""
-MEETUP_KEY = ""
-group_name = ''
+# Configuring log
+logging.basicConfig(filename='bot.log',level=logging.INFO)
 
-default_payload = { 'status': 'upcoming' }
-bot = telebot.TeleBot(TOKEN)
+# Configuring parameters
+logging.info("Configurando parâmetros")
+defaults = {
+    'telegram_token': '',
+    'meetup_key': '',
+    'group_name': ''
+}
+parser = argparse.ArgumentParser(description='Bot do GDG Aracaju')
+parser.add_argument('-t', '--telegram_token', help='Token da API do Telegram')
+parser.add_argument('-m', '--meetup_key', help='Key da API do Meetup')
+parser.add_argument('-g', '--group_name', help='Grupo do Meetup')
+namespace = parser.parse_args()
+command_line_args = {k:v for k, v in vars(namespace).items() if v}
 
-def generate_events(group_name, api_key):
+_config = collections.ChainMap(command_line_args, os.environ, defaults)
+
+# Starting bot
+logging.info("Iniciando bot")
+bot = telebot.TeleBot(_config["telegram_token"])
+bot.polling()
+
+def generate_events(self):
+    default_payload = { 'status': 'upcoming' }
     offset = 0
     while True:
         offset_payload = { 'offset': offset,
-                           'key': api_key,
-                           'group_urlname': group_name }
+                           'key': _config["meetup_key"],
+                           'group_urlname': _config["group_name"] }
         payload = default_payload.copy()
         payload.update(offset_payload)
         # Above is the equivalent of jQuery.extend()
@@ -44,9 +62,9 @@ def send_welcome(message):
     bot.reply_to(message, "Este bot faz buscas no Meetup do GDG Aracaju: http://meetup.com/GDG-Aracaju")
 
 @bot.message_handler(commands=['events'])
-def query_text(message):
+def list_upcoming_events(message):
     try:
-        all_events = list(generate_events(group_name, MEETUP_KEY))
+        all_events = list(self.generate_events())
         response = ""
         print(all_events)
         for event in all_events:
@@ -63,6 +81,3 @@ def query_text(message):
         bot.reply_to(message, response)
     except Exception as e:
         print(e)
-
-print("iniciando bot....")
-bot.polling()

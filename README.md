@@ -1,6 +1,8 @@
 # GDG Aracaju Bot
 Bot de Telegram
 
-Dependências:
-Telebot - https://github.com/eternnoir/pyTelegramBotAPI
+## Dependências:
+- Python 3.4
+- Instalar as dependências via `pip install -r requirements.txt`
 
+## Uso:
