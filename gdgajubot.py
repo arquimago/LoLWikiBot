@@ -32,9 +32,8 @@ logging.info("Iniciando bot")
 logging.info("Usando telegram_token=%s" % (_config["telegram_token"]))
 logging.info("Usando meetup_key=%s" % (_config["meetup_key"]))
 bot = telebot.TeleBot(_config["telegram_token"])
-bot.polling()
 
-def generate_events(self):
+def generate_events():
     default_payload = { 'status': 'upcoming' }
     offset = 0
     while True:
@@ -61,14 +60,15 @@ def generate_events(self):
 
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
+    logging.info("/start")
     bot.reply_to(message, "Este bot faz buscas no Meetup do GDG Aracaju: http://meetup.com/GDG-Aracaju")
 
 @bot.message_handler(commands=['events'])
 def list_upcoming_events(message):
+    logging.info("/events")
     try:
-        all_events = list(self.generate_events())
+        all_events = list(generate_events())
         response = ""
-        print(all_events)
         for event in all_events:
             # convert time returned by Meetup API
             time = int(event['time'])/1000
@@ -83,3 +83,5 @@ def list_upcoming_events(message):
         bot.reply_to(message, response)
     except Exception as e:
         print(e)
+
+bot.polling()
