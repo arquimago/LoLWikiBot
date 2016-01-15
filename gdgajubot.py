@@ -29,6 +29,8 @@ _config = collections.ChainMap(command_line_args, os.environ, defaults)
 
 # Starting bot
 logging.info("Iniciando bot")
+logging.info("Usando telegram_token=%s" % (_config["telegram_token"]))
+logging.info("Usando meetup_key=%s" % (_config["meetup_key"]))
 bot = telebot.TeleBot(_config["telegram_token"])
 bot.polling()
 
