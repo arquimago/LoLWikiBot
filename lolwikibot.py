@@ -4,7 +4,7 @@ import wikia
 import telebot
 from telebot import types
 
-TOKEN = "169600264:AAFowCFFLv7CgIvKyPKcIEJrJAZwwljQKiQ"
+TOKEN = "INSIRA SEU TOKEN AQUI"
 lol = "leagueoflegends"
 bot = telebot.TeleBot(TOKEN)
 
