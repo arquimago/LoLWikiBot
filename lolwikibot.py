@@ -4,7 +4,7 @@ import wikia
 import telebot
 from telebot import types
 
-TOKEN = "INSIRA SEU TOKEN AQUI"
+TOKEN = "169600264:AAGp6eMUBEb96pe2yTGN-xkpw9hiJemSF6Y"
 lol = "leagueoflegends"
 bot = telebot.TeleBot(TOKEN)
 
@@ -15,10 +15,10 @@ def send_welcome(message):
 @bot.inline_handler(lambda query: query.query)
 def query_text(inline_query):
 	try:
-		results = range(0,10)
-		s = wikia.search(lol,inline_query.query)
+		s = wikia.search(lol,inline_query.query,10)
+		results = range(0,len(s))
 		
-		for i in range(0,10):
+		for i in range(0,len(s)):
 		
 			url = wikia.page(lol,s[i]).url
 			url = url.replace(' ', '%20')
