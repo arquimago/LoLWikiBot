@@ -27,13 +27,13 @@ def send_welcome(message):
 @bot.inline_handler(lambda query: query.query)
 def query_text(inline_query):
 	total_de_resultados = 30
-	erro_lol = "The Journal of Justice:"
+	erro_wiki = "The Journal of Justice:"
 	try:
 		s = wikia.search(wiki_name,inline_query.query,total_de_resultados)
 		resultados = range(0,len(s))
 		
 		for i in range(0,len(s)):
-			erro = s[i].find(erro_lol)
+			erro = s[i].find(erro_wiki)
 			if(erro>-1):
 				break
 			url = wikia.page(wiki_name,s[i]).url
