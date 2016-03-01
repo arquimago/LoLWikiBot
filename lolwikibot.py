@@ -26,23 +26,23 @@ def send_welcome(message):
 
 @bot.inline_handler(lambda query: query.query)
 def query_text(inline_query):
-	total_de_resultados = 30
+	total = 30
 	erro_wiki = "The Journal of Justice:"
 	try:
-		s = wikia.search(wiki_name,inline_query.query,total_de_resultados)
-		resultados = range(0,len(s))
+		search = wikia.search(wiki_name,inline_query.query,total)
+		results = range(0,len(s))
 		
 		for i in range(0,len(s)):
-			erro = s[i].find(erro_wiki)
-			if(erro>-1):
+			error = search[i].find(erro_wiki)
+			if(error>-1):
 				break
-			url = wikia.page(wiki_name,s[i]).url
+			url = wikia.page(wiki_name,search[i]).url
 			url = url.replace(' ', '%20')
-			title = wikia.page(wiki_name,s[i]).title
-			id = "%d"%i
-			resultados[i] = types.InlineQueryResultArticle(id, title, url)
+			title = wikia.page(wiki_name,search[i]).title
+			id = "%d"%(i+1)
+			results[i] = types.InlineQueryResultArticle(id, title, url)
 		
-		bot.answer_inline_query(inline_query.id, resultados)
+		bot.answer_inline_query(inline_query.id, results)
 		
 	except Exception as e:
 		print(e)
