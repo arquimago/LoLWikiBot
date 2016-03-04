@@ -6,7 +6,7 @@ from telebot import types
 import requests
 
 TOKEN = "YOUR TOKEN HERE"
-lol = "leagueoflegends"
+wiki = "leagueoflegends"
 bot = telebot.TeleBot(TOKEN)
 
 teclado = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -29,18 +29,17 @@ def send_welcome(message,reply_markup=teclado):
 @bot.inline_handler(lambda query: query.query)
 def query_text(inline_query):
 	total_de_resultados = 10
-	erro_lol = "The Journal of Justice:"
 	try:
-		s = wikia.search(lol,inline_query.query,total_de_resultados)
+		s = wikia.search(wiki,inline_query.query,total_de_resultados)
 		resultados = range(0,len(s))
 		
 		for i in range(0,len(s)):
-			erro = s[i].find(erro_lol)
-			if(erro>-1):
+			try: 
+				url = wikia.page(wiki,s[i]).url
+			except:
 				break
-			url = wikia.page(lol,s[i]).url
 			url = url.replace(' ', '%20')
-			title = wikia.page(lol,s[i]).title
+			title = wikia.page(wiki,s[i]).title
 			id = "%d"%i
 			resultados[i] = types.InlineQueryResultArticle(id, title, url)
 		
