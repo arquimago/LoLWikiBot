@@ -28,10 +28,10 @@ def send_welcome(message,reply_markup=teclado):
 
 @bot.inline_handler(lambda query: query.query)
 def query_text(inline_query):
-	total_de_resultados = 10
+	total = 10
 	try:
-		s = wikia.search(wiki,inline_query.query,total_de_resultados)
-		resultados = range(0,len(s))
+		s = wikia.search(wiki,inline_query.query,total)
+		results = range(0,total)
 		
 		for i in range(0,len(s)):
 			try: 
@@ -41,9 +41,9 @@ def query_text(inline_query):
 			url = url.replace(' ', '%20')
 			title = wikia.page(wiki,s[i]).title
 			id = "%d"%i
-			resultados[i] = types.InlineQueryResultArticle(id, title, url)
+			results[i] = types.InlineQueryResultArticle(id, title, url)
 		
-		bot.answer_inline_query(inline_query.id, resultados)
+		bot.answer_inline_query(inline_query.id, results)
 		
 	except Exception as e:
 		print(e)
