@@ -1,7 +1,2 @@
-MarkupSafe==0.23
-py==1.4.31
-pyTelegramBotAPI==1.4.1
-pytest==2.8.5
-requests==2.5.3
-six==1.10.0
-wheel==0.26.0
+pyTelegramBotAPI==1.4.2
+wikia==1.4.3
