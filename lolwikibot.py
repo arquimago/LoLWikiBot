@@ -3,7 +3,6 @@
 
 import wikia
 import telebot
-import time
 
 TOKEN = "YOUR TOKEN HERE"
 WIKI = "leagueoflegends"
@@ -54,9 +53,4 @@ def query_text(inline_query):
     except Exception as ex:
         print(ex)
 
-while(True):
-    try:
-        BOT.polling(none_stop=True, interval=0, timeout=20)
-    except:
-        print("Caiu às %s" % time.ctime())
-        time.sleep(20000)
+BOT.polling(none_stop=True, interval=0, timeout=20)
