@@ -8,23 +8,18 @@ TOKEN = "YOUR TOKEN HERE"
 WIKI = "leagueoflegends"
 BOT = telebot.TeleBot(TOKEN)
 
-TECLADO = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
-TECLADO.row('start')
-TECLADO.row('help')
-TECLADO.row('info')
-
 @BOT.message_handler(commands=['start'])
-def send_welcome_start(message, reply_markup=TECLADO):
+def send_welcome_start(message):
     BOT.reply_to(message, "Testanto o PYTHON 3")
 
 @BOT.message_handler(commands=['help'])
-def send_welcome_help(message, reply_markup=TECLADO):
+def send_welcome_help(message):
     BOT.reply_to(message, "Para utilizar esse bot apenas escreva " \
         "@lolwbot e os termos da busca, não envie a mensagem apenas " \
         "aguarde os resultados numa caixa popup")
 
 @BOT.message_handler(commands=['info'])
-def send_welcome_info(message, reply_markup=TECLADO):
+def send_welcome_info(message):
     BOT.reply_to(message, "O propósito deste bot é apenas fazer buscas inline, "\
         "se deseja mais interações e informações sobre o jogo, campeões, " \
         "invocadores, partidas e tudo mais recomendo utilizar o " \
