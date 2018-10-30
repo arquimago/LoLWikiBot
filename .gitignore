@@ -2,3 +2,4 @@
 *.ini
 
 *.ini
+.env
