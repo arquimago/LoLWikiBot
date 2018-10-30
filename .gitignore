@@ -1,5 +1,10 @@
-#Arquivos de Configuração
+*$py.class
+
+# Configurations Files
 *.ini
 
-*.ini
+# Enviroments
 .env
+
+# Distribution / packaging
+*.pyc
