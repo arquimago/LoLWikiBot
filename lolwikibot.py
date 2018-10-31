@@ -3,14 +3,7 @@
 
 import wikia
 import telebot
-import logging
-
-logger = telebot.logger
-telebot.logger.setLevel(logging.DEBUG) # Outputs debug messages to console.
-
-TOKEN = "YOUR TOKEN HERE"
-WIKI = "leagueoflegends"
-BOT = telebot.TeleBot(TOKEN)
+from settings import BOT, WIKI
 
 @BOT.message_handler(commands=['start'])
 def send_welcome_start(message):

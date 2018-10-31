@@ -1,2 +1,3 @@
 pyTelegramBotAPI==1.4.2
 wikia==1.4.3
+python-decouple==3.1
