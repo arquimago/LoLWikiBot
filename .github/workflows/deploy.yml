@@ -41,7 +41,7 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
       
       - name: Bundle Install
-        run: ssh staging 'cd API-test && pip install -r requirements.txt'
+        run: ssh staging 'cd LoLWikiBot && pip install -r requirements.txt'
 
       - name: Start the server
         if: ${{ always() }}
