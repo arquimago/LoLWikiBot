@@ -8,3 +8,4 @@
 
 # Distribution / packaging
 *.pyc
+__pycache__

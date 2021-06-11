@@ -1,0 +1,48 @@
+name: SSH Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+
+      - name: Check out the source
+        run: ssh staging 'cd LoLWikiBot && git fetch && git reset --hard origin/master'
+      
+      - name: Config env
+        run: |
+          ssh staging  << EOF
+              cd LoLWikiBot 
+              echo "TOKEN=$TOKEN" > .env
+          EOF
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+      
+      - name: Bundle Install
+        run: ssh staging 'cd API-test && pip install -r requirements.txt'
+
+      - name: Start the server
+        if: ${{ always() }}
+        run: ssh staging 'cd LoLWikiBot && pm2 restart ecosystem.config.js'

@@ -1,48 +1,41 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import wikia
+import fandom
 import telebot
-from settings import BOT, WIKI
+from settings import BOT, WIKI, LANGUAGE
 
-@BOT.message_handler(commands=['start'])
+fandom.set_lang(LANGUAGE) 
+fandom.set_wiki(WIKI)
+print("STARTANDO CARAI")
+
+@BOT.message_handler(commands=['start','help', 'info'])
 def send_welcome_start(message):
-    BOT.reply_to(message, "Testanto o PYTHON 3")
-
-@BOT.message_handler(commands=['help'])
-def send_welcome_help(message):
     BOT.reply_to(message, "Para utilizar esse bot apenas escreva " \
         "@lolwbot e os termos da busca, não envie a mensagem apenas " \
         "aguarde os resultados numa caixa popup")
 
-@BOT.message_handler(commands=['info'])
-def send_welcome_info(message):
-    BOT.reply_to(message, "O propósito deste bot é apenas fazer buscas inline, "\
-        "se deseja mais interações e informações sobre o jogo, campeões, " \
-        "invocadores, partidas e tudo mais recomendo utilizar o " \
-        "@League_of_Legends_bot criado pelo @Edurolp e com tradução para " \
-        "Português feita por mim (@Arquimago).")
-
 @BOT.inline_handler(lambda query: query.query)
 def query_text(inline_query):
-    total = 10
+    
+    nada = telebot.types.InlineQueryResultArticle("0", "Nada encontrado", telebot.types.InputTextMessageContent("Não há nada sobre '"+ inline_query.query + "' no " + WIKI))
     try:
-        search_results = wikia.search(WIKI, inline_query.query, total)
+        search_results = fandom.search(inline_query.query)
         results = []
-
+        
         for i, page_result in enumerate(search_results):
-            try:
-                page = wikia.page(WIKI, page_result)
-            except:
-                break
-
+            
+            page = fandom.page(page_result[0])
+                
             title, url = page.title, page.url
             url = url.replace(' ', '%20')
-            results.append(telebot.types.InlineQueryResultArticle(str(i), title, url))
+            results.append(telebot.types.InlineQueryResultArticle(str(i), title, telebot.types.InputTextMessageContent(url)))
 
+        if(len(results) == 0):
+            results.append(nada)
         BOT.answer_inline_query(inline_query.id, results)
+    except:
+        BOT.answer_inline_query(inline_query.id, [nada])
 
-    except Exception as ex:
-        print(ex)
-
+print("CONFIGURADO CARAI")
 BOT.polling(none_stop=True, interval=0, timeout=20)
