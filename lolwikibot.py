@@ -7,7 +7,7 @@ from settings import BOT, WIKI, LANGUAGE
 
 fandom.set_lang(LANGUAGE) 
 fandom.set_wiki(WIKI)
-print("STARTANDO CARAI")
+print("STARTANDO")
 
 @BOT.message_handler(commands=['start','help', 'info'])
 def send_welcome_start(message):
@@ -37,5 +37,5 @@ def query_text(inline_query):
     except:
         BOT.answer_inline_query(inline_query.id, [nada])
 
-print("CONFIGURADO CARAI")
+print("CONFIGURADO")
 BOT.polling(none_stop=True, interval=0, timeout=20)
